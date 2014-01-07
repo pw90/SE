@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  *
@@ -60,11 +61,15 @@ public class Solution implements Serializable {
     @Column(name = "CAPACITY")
     private Integer capacity;
     
+    @Transient
+    private ArrayList<Instance> instanceList; 
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "solution", fetch = FetchType.EAGER)
     private Collection<Route> routeCollection;
 
     public Solution() {
         routeCollection = new ArrayList<Route>();
+        instanceList = new ArrayList<Instance>();
     }
 
     public Solution(Integer id) {
@@ -124,6 +129,14 @@ public class Solution implements Serializable {
         if (route.getSolution() != this) {
             route.setSolution(this);
         }
+    }
+    
+    public void addInstance(Instance instance) {
+        this.instanceList.add(instance);
+    }
+    
+    public Instance getInstance(int index){
+        return instanceList.get(index);
     }
     
 

@@ -3,17 +3,30 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package gui;
+
+import entity.Instance;
+import entity.Route;
+import entity.Solution;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.List;
 import java.util.LinkedList;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.ListModel;
 import org.apache.commons.io.FileUtils;
+import readwriter.FileManager;
+
 /**
  *
  * @author acer
@@ -23,11 +36,15 @@ public class SEFrame extends javax.swing.JFrame {
     private File instance;
     private File solution;
     private String log;
+    FileManager fileManager;
+    Solution solutionEntity;
+
     /**
      * Creates new form NewJFrame
      */
     public SEFrame() {
         initComponents();
+        fileManager = new FileManager();
     }
 
     /**
@@ -236,18 +253,55 @@ public class SEFrame extends javax.swing.JFrame {
         solutionDataList.removeAll();
         DefaultListModel instanceModel = new DefaultListModel();
         DefaultListModel solutionModel = new DefaultListModel();
+        Graphics fgx = drawingPanel.getGraphics();
+
+        //LOAD DATA
+        fileManager.readFileSolution("resources/solution/C1_2_9.txt");
+        fileManager.readFileInstance("resources/instance/C1_2_9.txt");
         try {
-            for(String line: FileUtils.readLines(instance)) {
+            solutionEntity = fileManager.getSolution();
+            logTextArea.append(solutionEntity.getNumberofvehicles().toString());
+
+        } catch (Exception ex) {
+            Logger.getLogger(SEFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            for (String line : FileUtils.readLines(instance)) {
                 instanceModel.addElement(line);
             }
-            for(String line: FileUtils.readLines(solution)) {
+            for (String line : FileUtils.readLines(solution)) {
                 solutionModel.addElement(line);
             }
             instanceDataList.setModel(instanceModel);
             solutionDataList.setModel(solutionModel);
+        } catch (IOException e) {
+
         }
-        catch (IOException e) {
-            
+        //DO drawing
+        try {
+            solutionEntity = fileManager.getSolution();
+            Collection routes = solutionEntity.getRouteCollection();
+
+            for (Iterator iterator = routes.iterator(); iterator.hasNext();) {
+                Route r = (Route) routes.iterator().next();
+
+                List customers = r.getCustomers();
+                int i = 0;
+                int lastX = 0;
+                int lastY = 0;
+                for (Object customerID : customers) {
+                    Instance customer = solutionEntity.getInstance((int) customerID);
+                    fgx.drawLine(lastX, lastY, customer.getX(), customer.getY());
+
+                    lastX = customer.getX();
+                    lastY = customer.getY();
+                    i++;
+                }
+                break;
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(SEFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_processButtonActionPerformed
 

@@ -1,5 +1,6 @@
 package readwriter;
 
+import entity.Instance;
 import entity.Route;
 import entity.Solution;
 import java.io.File;
@@ -95,10 +96,16 @@ public class FileManager {
         
         solution.setCapacity(Integer.parseInt(numbers.get(1).toString()));
                 
-        for (int i = 9; i < instanceLines.length; i++ ) {
+        for (int i = 5; i < solutionLines.length; i++ ) {
             Route route = new Route();
-            route.setData(instanceLines[i]);
+            route.setData(solutionLines[i]);
             solution.addRoute(route);
+        }
+        
+        for (int i = 9; i < instanceLines.length; i++ ) {
+            Instance instance = new Instance();
+            instance.setData(instanceLines[i]);
+            solution.addInstance(instance);
         }
 
         return solution;
