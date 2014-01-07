@@ -6,6 +6,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import tools.Validator;
 
 /**
@@ -49,11 +52,13 @@ public class FileManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (validator.checkSolution(content)) {
-            dataSolution =  content;
-        } else {
-            System.err.println("Dupa");
-        }
+        
+        dataSolution =  content;
+//        if (validator.checkSolution(content)) {
+//            dataSolution =  content;
+//        } else {
+//            System.err.println("Error");
+//        }
         
     }
 
@@ -68,24 +73,29 @@ public class FileManager {
         String[] instanceLines = dataInstance.split("\n");
         String tmp[];
         
-        tmp = solutionLines[0].split("Instance Name: "); 
+        tmp = solutionLines[0].split("Instance name :	"); 
         solution.setInstance(tmp[1]);
         
-        tmp = solutionLines[1].split("Authors: "); 
+        tmp = solutionLines[1].split("Authors :	"); 
         solution.setAuthors(tmp[1]);
         
-        tmp = solutionLines[2].split("Date: ");      
-        solution.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(tmp[1]));
+        tmp = solutionLines[2].split("Date : 		");    
+        solution.setDate(new SimpleDateFormat("dd/MM/yyyy").parse(tmp[1]));
         
-        tmp = solutionLines[3].split("Reference: "); 
+        tmp = solutionLines[3].split("Reference : 	"); 
         solution.setReference(tmp[1]);
+              
+        Pattern p = Pattern.compile("\\d+");
+        Matcher m = p.matcher(instanceLines[4]);
+        ArrayList numbers = new ArrayList();
+        while (m.find()) {
+          numbers.add(m.group());
+        }
+        solution.setNumberofvehicles(Integer.parseInt(numbers.get(0).toString()));
         
-        tmp = instanceLines[3].split(" ");
-        solution.setNumberofvehicles(Integer.parseInt(tmp[0]));
-        solution.setCapacity(Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1)));
-        
-        
-        for (int i = 6; i < instanceLines.length; i++ ) {
+        solution.setCapacity(Integer.parseInt(numbers.get(1).toString()));
+                
+        for (int i = 9; i < instanceLines.length; i++ ) {
             Route route = new Route();
             route.setData(instanceLines[i]);
             solution.addRoute(route);
