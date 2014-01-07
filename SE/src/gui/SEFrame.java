@@ -8,6 +8,7 @@ package gui;
 import entity.Instance;
 import entity.Route;
 import entity.Solution;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -283,8 +284,11 @@ public class SEFrame extends javax.swing.JFrame {
             solutionEntity = fileManager.getSolution();
             Collection routes = solutionEntity.getRouteCollection();
 
-            for (Iterator iterator = routes.iterator(); iterator.hasNext();) {
-                Route r = (Route) routes.iterator().next();
+            Iterator iterator = routes.iterator();
+            while (iterator.hasNext()) {
+                Color randomColor = new Color((int) (Math.random() * 0x1000000));
+
+                Route r = (Route) iterator.next();
 
                 List customers = r.getCustomers();
                 int i = 0;
@@ -292,13 +296,13 @@ public class SEFrame extends javax.swing.JFrame {
                 int lastY = 0;
                 for (Object customerID : customers) {
                     Instance customer = solutionEntity.getInstance((int) customerID);
+                    fgx.setColor(randomColor);
                     fgx.drawLine(lastX, lastY, customer.getX(), customer.getY());
 
                     lastX = customer.getX();
                     lastY = customer.getY();
                     i++;
                 }
-                break;
             }
         } catch (Exception ex) {
             Logger.getLogger(SEFrame.class.getName()).log(Level.SEVERE, null, ex);

@@ -28,17 +28,13 @@ public class SE {
 //        DBManager db = new DBManager();
 //        db.create(solution);
         Collection routes = solution.getRouteCollection();
+        int i=0;
         
-        for (Iterator iterator = routes.iterator(); iterator.hasNext();) {
-            Route r = (Route) routes.iterator().next();
+        Iterator iterator = routes.iterator();
         
-            List customers = r.getCustomers();
-            for (Object customerID : customers) {
-                Instance customer = solution.getInstance((int)customerID);
-                System.out.print(customer.getX());
-            }
-            break;
-
+       while( iterator.hasNext()) {
+            Route r = (Route) iterator.next();
+            System.out.println(r.getData());
         }
 
        
