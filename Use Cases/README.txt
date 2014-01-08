@@ -1,0 +1,1 @@
+Plik utworzony zosta³ w programie Visual Paradigm
